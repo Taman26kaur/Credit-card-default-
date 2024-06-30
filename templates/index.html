@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Credit Card Defaulter Prediction</title>
+    <link rel="stylesheet" type="text/css" href="static/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <h1>Credit Card Defaulter Prediction</h1>
+        <form id="predictionForm">
+            <fieldset>
+                <legend>Demographic Data</legend>
+                <div class="form-group">
+                    <label>Gender:</label>
+                    <div class="radio-group">
+                        <label><input type="radio" name="gender" value="1" required> Male</label>
+                        <label><input type="radio" name="gender" value="2"> Female</label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Education:</label>
+                    <div class="radio-group">
+                        <label><input type="radio" name="education" value="1" required> Graduate School</label>
+                        <label><input type="radio" name="education" value="2"> University</label>
+                        <label><input type="radio" name="education" value="3"> High School</label>
+                        <label><input type="radio" name="education" value="4"> Others</label>
+                        <label><input type="radio" name="education" value="5"> Unknown</label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Marital Status:</label>
+                    <div class="radio-group">
+                        <label><input type="radio" name="marital_status" value="1" required> Married</label>
+                        <label><input type="radio" name="marital_status" value="2"> Single</label>
+                        <label><input type="radio" name="marital_status" value="3"> Others</label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Age:</label>
+                    <input type="number" name="age" required>
+                </div>
+                <div class="form-group">
+                    <label>Limit Balance:</label>
+                    <input type="number" name="limit_balance" required>
+                </div>
+            </fieldset>
+            <fieldset>
+                <legend>Behavioral Data</legend>
+                <div class="form-group">
+                    <label>Repayment Status (-1=pay duly, =one month delay, ..., 9=delay for nine months and above):</label>
+                    <div class="form-group-inline">
+                        <label>April: <input type="number" name="repayment_status_april" required></label>
+                        <label>May: <input type="number" name="repayment_status_may" required></label>
+                        <label>June: <input type="number" name="repayment_status_june" required></label>
+                        <label>July: <input type="number" name="repayment_status_july" required></label>
+                        <label>August: <input type="number" name="repayment_status_august" required></label>
+                        <label>September: <input type="number" name="repayment_status_september" required></label>
+                    </div>
+                </div>
+                <hr>
+                <div class="form-group">
+                    <label>Bill Amounts (in dollars):</label>
+                    <div class="form-group-inline">
+                        <label>April: <input type="number" name="bill_amount_april" required></label>
+                        <label>May: <input type="number" name="bill_amount_may" required></label>
+                        <label>June: <input type="number" name="bill_amount_june" required></label>
+                        <label>July: <input type="number" name="bill_amount_july" required></label>
+                        <label>August: <input type="number" name="bill_amount_august" required></label>
+                        <label>September: <input type="number" name="bill_amount_september" required></label>
+                    </div>
+                </div>
+                <hr>
+                <div class="form-group">
+                    <label>Previous Payments (in dollars):</label>
+                    <div class="form-group-inline">
+                        <label>April: <input type="number" name="previous_payment_april" required></label>
+                        <label>May: <input type="number" name="previous_payment_may" required></label>
+                        <label>June: <input type="number" name="previous_payment_june" required></label>
+                        <label>July: <input type="number" name="previous_payment_july" required></label>
+                        <label>August: <input type="number" name="previous_payment_august" required></label>
+                        <label>September: <input type="number" name="previous_payment_september" required></label>
+                    </div>
+                </div>
+            </fieldset>
+            <button type="submit">Predict</button>
+        </form>
+        <p id="result"></p>
+    </div>
+
+    <script>
+        document.getElementById('predictionForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const formData = new FormData(event.target);
+            const formObj = {};
+            formData.forEach((value, key) => formObj[key] = value);
+
+            fetch('http://127.0.0.1:5000/predict', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(formObj)
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('result').innerText = 'Prediction: ' + data.prediction;
+            });
+        });
+    </script>
+</body>
+</html>
